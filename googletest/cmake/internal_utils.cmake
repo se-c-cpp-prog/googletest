@@ -196,6 +196,31 @@ function(cxx_library_with_type name type cxx_flags)
   endif()
 
   target_compile_features(${name} PUBLIC cxx_std_17)
+  ### === EXTERNAL CHANGES ===
+  if(BUILD_WITH_SANITIZERS)
+    set(compile_option_list "")
+    set(compile_definition_list "")
+    set(link_option_list "")
+
+    if(MSVC)
+      list(APPEND compile_option_list /fsanitize=address)
+      list(APPEND compile_definition_list _DISABLE_STRING_ANNOTATION=1 _DISABLE_VECTOR_ANNOTATION=1)
+    else()
+      if(WIN32)
+        list(APPEND compile_option_list -fsanitize=address)
+        list(APPEND link_option_list -fsanitize=address)
+      else()
+        list(APPEND compile_option_list -fsanitize=address,leak,undefined)
+        list(APPEND link_option_list -fsanitize=address,leak,undefined)
+      endif()
+      list(APPEND compile_option_list -fno-sanitize-recover=all -fno-optimize-sibling-calls -fno-omit-frame-pointer)
+    endif()
+
+    target_compile_options(${name} PUBLIC ${compile_option_list})
+    target_link_options(${name} PUBLIC ${link_option_list})
+    target_compile_definitions(${name} PUBLIC ${compile_definition_list})
+  endif()
+  ### === EXTERNAL CHANGES ===
 endfunction()
 
 ########################################################################
