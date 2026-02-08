@@ -22,7 +22,7 @@ option(GTEST_HAS_ABSL "Use Abseil and RE2. Requires Abseil and RE2 to be separat
 
 ### === EXTERNAL CHANGES ===
 option(BUILD_WITH_SANITIZERS "Builds subprojects with available sanitizers." OFF)
-### === EXTERNAL CHANGES
+### === EXTERNAL CHANGES ===
 
 if(GTEST_HAS_ABSL)
   if(NOT TARGET absl::base)
